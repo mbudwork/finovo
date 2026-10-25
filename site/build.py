@@ -20,10 +20,10 @@ APP_URL = '/app/'                       # клиентский кабинет: �
 BRAND = 'Finovo'
 CONTACT_EMAIL = 'biuro@finovo.com.pl'   # в JSON-LD не попадает, пока ящик не создан (см. EMAIL_ACTIVE)
 EMAIL_ACTIVE = False
-# Телефон для связи. Сейчас тестовый — замените на реальный и поставьте PHONE_ACTIVE = True
+# Телефон для связи (он же WhatsApp)
 # (тогда номер попадёт и в разметку для Google).
-PHONE = '+48 111 111 111'
-PHONE_ACTIVE = False
+PHONE = '+49 15510 469402'
+PHONE_ACTIVE = True
 WHATSAPP = True                          # кнопка WhatsApp на тот же номер
 DEMO_PATH = '/demo/'                     # демо кабинета (src/demo/index.html), не индексируется
 SEASON_UNTIL = '2026-12-31'              # до этой даты на первом экране плашка «смена бюро с 1 января»
