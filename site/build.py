@@ -25,6 +25,9 @@ EMAIL_ACTIVE = False
 PHONE = '+49 15510 469402'
 PHONE_ACTIVE = True
 WHATSAPP = True                          # кнопка WhatsApp на тот же номер
+# Заявки с формы дублируются в Google-таблицу и Telegram через Google Apps Script (см. leads/README.md).
+# Вставьте сюда адрес веб-приложения Apps Script (https://script.google.com/macros/s/…/exec). Пусто — только Netlify Forms.
+LEADS_HOOK = 'https://script.google.com/macros/s/AKfycbyOUI6zCYoLzhyGphXgiNk8mgRem0fPb2GbNF-FnyblErkODrZb3cjhEE_6oMHpCmH_Aw/exec'
 DEMO_PATH = '/demo/'                     # демо кабинета (src/demo/index.html), не индексируется
 SEASON_UNTIL = '2026-12-31'              # до этой даты на первом экране плашка «смена бюро с 1 января»
 # Данные spółki для политики конфиденциальности — заполнить после регистрации.
@@ -32,6 +35,7 @@ COMPANY = dict(name='[nazwa spółki]', address='[adres siedziby]', nip='[NIP]',
 PRIVACY_UPDATED = '2026-10-21'
 
 T = json.loads((SRC / 'i18n.json').read_text('utf-8'))
+ASSET_V = ''  # задаётся в main() по содержимому site.css и site.js
 LANGS = {
     'pl': dict(html='pl', og='pl_PL', prefix=''),
     'uk': dict(html='uk', og='uk_UA', prefix='/uk'),
@@ -238,7 +242,7 @@ def head(lang, title, desc, path, alt_paths, og_type='website', jsonld=None, noi
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css?v={ASSET_V}">
 {ld}</head>
 <body>
 '''
@@ -281,7 +285,7 @@ def footer(lang, home_path):
 '''
 
 def scripts(lang):
-    return '<script src="/assets/site.js" defer></script>\n</body>\n</html>\n'
+    return f'<script src="/assets/site.js?v={ASSET_V}" defer></script>\n</body>\n</html>\n'
 
 # ── JSON-LD ─────────────────────────────────────────────────────────────────
 ORG_ID = SITE + '/#organization'
@@ -493,14 +497,20 @@ SITE_JS = r'''/* Finovo: форма заявки и копирование ад�
     g.innerHTML = h; mEl.textContent = names[m]; var yEl = document.getElementById('calYear'); if (yEl) yEl.textContent = y;
   }
   if (!f) return;
-  var live = /finovo|netlify\.app$/i.test(location.hostname);
+  var live = /finovo|netlify\.app$/i.test(location.hostname), HOOK = '__LEADS_HOOK__';
   f.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var out = document.getElementById('fMsgOut'), btn = document.getElementById('fSend');
     if (!document.getElementById('fName').value.trim() || !document.getElementById('fContact').value.trim()) { out.className = 'msg err'; out.textContent = f.dataset.req; return; }
     if (!live) { out.className = 'msg'; out.textContent = f.dataset.preview; return; }
     btn.disabled = true;
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(new FormData(f)).toString() })
+    var fd = new FormData(f), c = (fd.get('kontakt') || '').trim(), q = new URLSearchParams(location.search), utm = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'].forEach(function (k) { if (q.get(k)) utm[k] = q.get(k); });
+    var lead = { name: (fd.get('imie') || '').trim(), contact: c, phone: /@/.test(c) ? '' : c, email: /@/.test(c) ? c : '', form: fd.get('forma') || '',
+      message: (fd.get('wiadomosc') || '').trim(), lang: fd.get('jezyk') || '', page: location.href, referrer: document.referrer || '', utm: utm, submitted_at: new Date().toISOString() };
+    /* копия в Google-таблицу и Telegram (Apps Script); основная отправка — Netlify Forms */
+    if (HOOK && !fd.get('bot-field')) { try { fetch(HOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead), keepalive: true }).catch(function () {}); } catch (e) {} }
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd).toString() })
       .then(function (r) { if (!r.ok) throw new Error(r.status); out.className = 'msg ok'; out.textContent = f.dataset.ok; f.reset(); })
       .catch(function () { out.className = 'msg err'; out.textContent = f.dataset.err; })
       .then(function () { btn.disabled = false; });
@@ -655,8 +665,11 @@ HEADERS = '''/*
 def main():
     if OUT.exists(): shutil.rmtree(OUT)
     (OUT / 'assets').mkdir(parents=True)
+    global ASSET_V
+    _css = (SRC / 'site.css').read_text('utf-8') + EXTRA_CSS; _js = SITE_JS.replace('__LEADS_HOOK__', LEADS_HOOK)
+    ASSET_V = hashlib.sha1((_css + _js).encode()).hexdigest()[:8]
     (OUT / 'assets' / 'site.css').write_text((SRC / 'site.css').read_text('utf-8') + EXTRA_CSS, 'utf-8')
-    (OUT / 'assets' / 'site.js').write_text(SITE_JS, 'utf-8')
+    (OUT / 'assets' / 'site.js').write_text(SITE_JS.replace('__LEADS_HOOK__', LEADS_HOOK), 'utf-8')
     for f in (SRC / 'static').iterdir(): shutil.copy(f, OUT / f.name)
     pages = []
     for lang in LANGS:
