@@ -104,7 +104,7 @@ async function deliver(notes: Note[]) {
   if (error) throw error;
   if (!created?.length) return { created: 0, pushed: 0, emailed: 0 };
   const [pub, priv, resend, from, appUrl] = await Promise.all([secret('vapid_public'), secret('vapid_private'), secret('resend_key'), secret('mail_from'), secret('app_url')]);
-  const APP = (appUrl || 'https://kabinet-biuro.netlify.app').replace(/\/$/, '');
+  const APP = (appUrl || 'https://finovo.com.pl/app').replace(/\/$/, '');
   if (pub && priv) webpush.setVapidDetails(APP, pub, priv);
   const users = [...new Set(created.map((n: any) => n.user_id))];
   const [{ data: subs }, { data: prefs }] = await Promise.all([

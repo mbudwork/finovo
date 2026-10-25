@@ -71,7 +71,7 @@ API: https://api-test.ksef.mf.gov.pl/docs/v2 (тест), https://api.ksef.mf.gov
 
 ### Выкладка серверной части
 
-Миграции из `supabase/migrations/` применяются к проекту Supabase `heplihpjoxwsqpuyarul`,
+Миграции из `supabase/migrations/` применяются к проекту Supabase `ahijrnilsjbbhonxhvtw`,
 функции — `supabase functions deploy ksef-sync ksef-testkit` (или через панель Supabase).
 `ksef-sync` и `ksef-testkit` выкладываются с `verify_jwt = false` и проверяют доступ сами:
 из кабинета — JWT сотрудника бюро, из cron — заголовок `x-cron-secret` (как у `notify`).

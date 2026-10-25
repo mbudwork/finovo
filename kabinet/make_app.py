@@ -141,8 +141,8 @@ real = demo_only_css(with_i18n(real), False)
 # ── 2. демо для сайта ──────────────────────────────────────────────────────
 demo = s
 demo = rep(demo, '<title>Finovo — кабинет</title>', '<title>Finovo — демо кабинета</title>\n<meta name="robots" content="noindex">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n<meta name="theme-color" content="#15705a">')
-demo = rep(demo, "url: 'https://heplihpjoxwsqpuyarul.supabase.co',", "url: 'demo',")
-demo = rep(demo, "key: 'sb_publishable_BjcMQXZ4qG7ncjHDHAFP_Q_JsB_is2e',", "key: 'demo',")
+demo = rep(demo, "url: 'https://ahijrnilsjbbhonxhvtw.supabase.co',", "url: 'demo',")
+demo = rep(demo, "key: 'sb_publishable_ZipRQTQqwzC7KdPsT-mINg_Q0Akrp_E',", "key: 'demo',")
 demo = re.sub(r"  vapid: '[^']*'", "  vapid: '',\n  site: '/',\n  contact: '/#kontakt'", demo)
 demo = rep(demo, "  bureauName: 'Ваше бюро',", "  bureauName: 'Finovo',")
 crawl = demo  # до правок «без входа»

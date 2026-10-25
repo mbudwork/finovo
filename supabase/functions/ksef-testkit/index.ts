@@ -34,7 +34,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 async function login(nip: string, name: string) {
   const c = new KSeFClient({ environment: 'TEST' });
-  const seal = await CertificateService.generateCompanySeal(clean(name), 'VATPL-' + nip, clean(name), 'ECDSA');
+  const seal = await CertificateService.generateCompanySeal(clean(name), 'VATPL-' + nip, clean(name), 'RSA');
   await c.loginWithCertificate(seal.certificatePem, seal.privateKeyPem, nip);
   return c;
 }
