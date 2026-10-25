@@ -27,7 +27,7 @@ PHONE_ACTIVE = True
 WHATSAPP = True                          # кнопка WhatsApp на тот же номер
 # Заявки с формы дублируются в Google-таблицу и Telegram через Google Apps Script (см. leads/README.md).
 # Вставьте сюда адрес веб-приложения Apps Script (https://script.google.com/macros/s/…/exec). Пусто — только Netlify Forms.
-LEADS_HOOK = 'https://script.google.com/macros/s/AKfycbyOUI6zCYoLzhyGphXgiNk8mgRem0fPb2GbNF-FnyblErkODrZb3cjhEE_6oMHpCmH_Aw/exec'
+LEADS_HOOK = 'https://script.google.com/macros/s/AKfycbxT_Q_WaNTh68FXAilcbKKnjtW_ZG9zqFr9Qklhm1Y-9eRudVB09a-vwtgdI5TzEoU02w/exec'
 DEMO_PATH = '/demo/'                     # демо кабинета (src/demo/index.html), не индексируется
 SEASON_UNTIL = '2026-12-31'              # до этой даты на первом экране плашка «смена бюро с 1 января»
 # Данные spółki для политики конфиденциальности — заполнить после регистрации.
