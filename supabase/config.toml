@@ -1,0 +1,14 @@
+# Supabase CLI: проект heplihpjoxwsqpuyarul
+project_id = "heplihpjoxwsqpuyarul"
+
+[functions.notify]
+verify_jwt = false
+
+[functions.invite-client]
+verify_jwt = true
+
+[functions.ksef-sync]
+verify_jwt = false
+
+[functions.ksef-testkit]
+verify_jwt = false
