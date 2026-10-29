@@ -214,36 +214,8 @@
       </div>
     </div>
   </section>
-  <div class="pk" id="pkSheet" hidden>
-    <div class="pk-bg" data-pk-close></div>
-    <div class="pk-in" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
-      <div class="pk-top"><span class="pk-step" id="pkStep" data-s1="" data-s2=""></span><button class="pk-x" type="button" data-pk-close aria-label="×">×</button></div>
-      <div id="pkS1">
-        <h2 id="pkTitle" data-i18n="pk.h"></h2>
-        <div class="pk-pkg"><div><b id="pkName"></b><span id="pkNet"></span></div><div class="pk-pr"><span id="pkFrom"></span><b id="pkPrice"></b><span>zł</span></div></div>
-        <form class="pk-form" id="pkForm" name="pakiet" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-          <input type="hidden" name="form-name" value="pakiet">
-          <p class="hp"><label>Nie wypełniaj <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-          <input type="hidden" name="pakiet" id="pkPkg"><input type="hidden" name="jezyk" value="pl" id="pkLang">
-          <div class="field"><label for="pkImie" data-i18n="pk.name"></label><input id="pkImie" name="imie" autocomplete="name" required></div>
-          <div class="field"><label for="pkTel" data-i18n="pk.tel"></label><input id="pkTel" name="telefon" type="tel" inputmode="tel" autocomplete="tel" placeholder="+48" required></div>
-          <div class="field"><label for="pkMail" data-i18n="pk.mail"></label><input id="pkMail" name="email" type="email" inputmode="email" autocomplete="email"></div>
-          <div class="field"><label for="pkStart" data-i18n="pk.start"></label><select id="pkStart" name="od_kiedy"><option data-i18n="pk.st1"></option><option data-i18n="pk.st2"></option><option data-i18n="pk.st3"></option><option data-i18n="pk.st4"></option></select></div>
-          <div class="field"><label for="pkStaff" data-i18n="pk.staff"></label><select id="pkStaff" name="pracownicy"><option data-i18n="pk.sf1"></option><option>1–2</option><option>3–5</option><option>6–10</option><option data-i18n="pk.sf5"></option></select></div>
-          <p class="consent"><span data-i18n="ct.consent"></span> <a href="#privacy" data-privacy-link></a>.</p>
-          <button class="btn" type="submit" id="pkSend" data-i18n="pk.send"></button>
-          <p class="msg" id="pkOut" role="status"></p>
-        </form>
-      </div>
-      <div id="pkS2" hidden>
-        <div class="pk-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <h2 data-i18n="pk.ok.h"></h2>
-        <p class="pk-okp" id="pkOkP" data-i18n="pk.ok.p"></p>
-        <button class="btn ghost" type="button" data-pk-close data-i18n="pk.close"></button>
-      </div>
-      <ol class="pk-next"><li data-i18n="pk.n1"></li><li data-i18n="pk.n2"></li><li data-i18n="pk.n3"></li></ol>
-    </div>
-  </div>
+
+<!--ORDER-->
 </main>
 
 <footer class="gut">

@@ -1,0 +1,36 @@
+<dialog class="pk" id="pkDlg" data-ok="Dziękujemy, {name}!" data-req="Podaj imię i numer telefonu." data-err="Nie udało się wysłać. Zadzwoń lub napisz na biuro@finovo.com.pl." aria-labelledby="pkTitle">
+  <div class="pk-in">
+    <button type="button" class="pk-x" data-pk-close aria-label="×">×</button>
+    <div class="pk-step" id="pkForm">
+      <p class="pk-k">Krok 1 z 2 · bez zobowiązań</p>
+      <h2 id="pkTitle">Zamów pakiet</h2>
+      <div class="pk-sum"><div><b id="pkName"></b><span id="pkLim"></span></div><div class="pk-price"><span id="pkFrom"></span><b id="pkPrice"></b><span>zł</span></div></div>
+      <form id="pkF" name="pakiet" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="pakiet">
+        <input type="hidden" name="pakiet" id="pkPkg">
+        <input type="hidden" name="jezyk" id="pkLang" value="pl">
+        <p class="hp"><label>Nie wypełniaj <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="pk-row">
+          <label class="pk-f"><span>Imię</span><input name="imie" id="pkNm" autocomplete="given-name" required></label>
+          <label class="pk-f"><span>Telefon</span><input name="telefon" id="pkTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+48" required></label>
+        </div>
+        <label class="pk-f"><span>E-mail (opcjonalnie)</span><input name="email" type="email" autocomplete="email"></label>
+        <div class="pk-row">
+          <label class="pk-f"><span>Od kiedy?</span><select name="start"><option value="Jak najszybciej">Jak najszybciej</option><option value="Od następnego miesiąca">Od następnego miesiąca</option><option value="Od 1 stycznia">Od 1 stycznia</option><option value="Jeszcze nie wiem">Jeszcze nie wiem</option></select></label>
+          <label class="pk-f"><span>Pracownicy</span><select name="pracownicy"><option value="0">Brak</option><option value="1-5">1–5</option><option value="6-20">6–20</option><option value="20+">Ponad 20</option></select></label>
+        </div>
+        <p class="pk-cons"><span>Wysyłając formularz, zgadzasz się na kontakt w sprawie oferty. Zasady przetwarzania danych opisuje</span> <a href="/polityka-prywatnosci/">polityka prywatności</a>.</p>
+        <button class="btn pk-go" type="submit" id="pkSend">Zamawiam pakiet</button>
+        <p class="pk-err" id="pkErr" role="alert"></p>
+      </form>
+      <ol class="pk-next"><li>Oddzwonimy w ciągu 1 dnia roboczego i potwierdzimy cenę.</li><li>Wyślemy umowę do podpisu online. Płacisz dopiero za pierwszy miesiąc obsługi.</li><li>Przejmujemy dokumenty od obecnego biura i zakładamy Ci aplikację.</li></ol>
+    </div>
+    <div class="pk-step" id="pkOk" hidden>
+      <div class="pk-okic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h2 id="pkOkH"></h2>
+      <p class="pk-okp">Zgłoszenie dotarło. Oddzwonimy w ciągu 1 dnia roboczego, żeby potwierdzić cenę i termin startu.</p>
+      <div class="pk-prep"><b>Przygotuj na rozmowę:</b><ul><li>NIP firmy</li><li>Okres wypowiedzenia w obecnym biurze (jeśli je masz)</li><li>Ile mniej więcej faktur masz w miesiącu</li></ul></div>
+      <div class="pk-okb"><a class="btn" id="pkDemo" href="/demo/?lang=pl">Zobacz aplikację w demo</a><button type="button" class="btn ghost" data-pk-close>Zamknij</button></div>
+    </div>
+  </div>
+</dialog>

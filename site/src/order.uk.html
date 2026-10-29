@@ -1,0 +1,36 @@
+<dialog class="pk" id="pkDlg" data-ok="Дякуємо, {name}!" data-req="Вкажіть ім’я та номер телефону." data-err="Не вдалося надіслати. Зателефонуйте або напишіть на biuro@finovo.com.pl." aria-labelledby="pkTitle">
+  <div class="pk-in">
+    <button type="button" class="pk-x" data-pk-close aria-label="×">×</button>
+    <div class="pk-step" id="pkForm">
+      <p class="pk-k">Крок 1 з 2 · без зобов’язань</p>
+      <h2 id="pkTitle">Замовити пакет</h2>
+      <div class="pk-sum"><div><b id="pkName"></b><span id="pkLim"></span></div><div class="pk-price"><span id="pkFrom"></span><b id="pkPrice"></b><span>zł</span></div></div>
+      <form id="pkF" name="pakiet" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="pakiet">
+        <input type="hidden" name="pakiet" id="pkPkg">
+        <input type="hidden" name="jezyk" id="pkLang" value="uk">
+        <p class="hp"><label>Nie wypełniaj <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="pk-row">
+          <label class="pk-f"><span>Ім'я</span><input name="imie" id="pkNm" autocomplete="given-name" required></label>
+          <label class="pk-f"><span>Телефон</span><input name="telefon" id="pkTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+48" required></label>
+        </div>
+        <label class="pk-f"><span>E-mail (необов’язково)</span><input name="email" type="email" autocomplete="email"></label>
+        <div class="pk-row">
+          <label class="pk-f"><span>З якого часу?</span><select name="start"><option value="Jak najszybciej">Якнайшвидше</option><option value="Od następnego miesiąca">З наступного місяця</option><option value="Od 1 stycznia">З 1 січня</option><option value="Jeszcze nie wiem">Ще не знаю</option></select></label>
+          <label class="pk-f"><span>Працівники</span><select name="pracownicy"><option value="0">Немає</option><option value="1-5">1–5</option><option value="6-20">6–20</option><option value="20+">Понад 20</option></select></label>
+        </div>
+        <p class="pk-cons"><span>Надсилаючи форму, ви погоджуєтеся на контакт щодо пропозиції. Правила обробки даних описує</span> <a href="/uk/polityka-konfidentsiinosti/">політика конфіденційності</a>.</p>
+        <button class="btn pk-go" type="submit" id="pkSend">Замовляю пакет</button>
+        <p class="pk-err" id="pkErr" role="alert"></p>
+      </form>
+      <ol class="pk-next"><li>Передзвонимо протягом 1 робочого дня й підтвердимо ціну.</li><li>Надішлемо договір на онлайн-підпис. Платите лише за перший місяць обслуговування.</li><li>Забираємо документи від теперішнього бюро й підключаємо вам застосунок.</li></ol>
+    </div>
+    <div class="pk-step" id="pkOk" hidden>
+      <div class="pk-okic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h2 id="pkOkH"></h2>
+      <p class="pk-okp">Заявку отримано. Передзвонимо протягом 1 робочого дня, щоб підтвердити ціну й дату старту.</p>
+      <div class="pk-prep"><b>Підготуйте до розмови:</b><ul><li>NIP фірми</li><li>Строк розірвання договору з теперішнім бюро (якщо є)</li><li>Скільки приблизно фактур у вас на місяць</li></ul></div>
+      <div class="pk-okb"><a class="btn" id="pkDemo" href="/demo/?lang=uk">Подивитися застосунок у демо</a><button type="button" class="btn ghost" data-pk-close>Закрити</button></div>
+    </div>
+  </div>
+</dialog>
