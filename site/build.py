@@ -342,6 +342,7 @@ def build_home(lang):
     t, H = T[lang], HOME[lang]
     src = (SRC / 'home.html').read_text('utf-8')
     main = src[src.index('<main'):src.index('</main>') + 7]
+    main = main.replace('<!--ORDER-->', (SRC / f'order.{lang}.html').read_text('utf-8').rstrip('\n'))   # окно «Zamów pakiet» (src/order.pl.html, order.uk.html)
     main = main.replace('<!--PRICING-->', (SRC / f'pricing.{lang}.html').read_text('utf-8').rstrip('\n').replace('\n', '\n'))   # пакеты и цены (src/pricing.pl.html, pricing.uk.html)
     def fill(m):
         key = m.group(4); v = t.get(key)
@@ -353,9 +354,6 @@ def build_home(lang):
     main = main.replace('<input type="hidden" name="jezyk" id="fLang" value="pl">', f'<input type="hidden" name="jezyk" id="fLang" value="{lang}">')
     main = main.replace('id="leadForm"', f'id="leadForm" data-ok="{e(t["ct.ok"])}" data-err="{e(t["ct.err"])}" data-req="{e(t["ct.req"])}" data-preview="{e(t["ct.preview"])}"')
     main = main.replace('id="copyMail"', f'id="copyMail" data-copied="{e(t["ct.copied"])}"')
-    main = main.replace('data-s1="" data-s2=""', f'data-s1="{e(t["pk.step1"])}" data-s2="{e(t["pk.step2"])}"')
-    main = main.replace('id="pkForm"', f'id="pkForm" data-req="{e(t["pk.req"])}" data-err="{e(t["ct.err"])}"')
-    main = main.replace('<input type="hidden" name="jezyk" value="pl" id="pkLang">', f'<input type="hidden" name="jezyk" value="{lang}" id="pkLang">')
     art = ARTICLES[0][lang]['path']
     main = main.replace(f'<p>{t["fq4.a"]}</p>', f'<p>{t["fq4.a"]} <a href="{art}">{UI[lang]["switch"]} →</a></p>')
     main = main.replace('href="#demo" data-demo-link="jdg"', f'href="{demo_url(lang)}"')
@@ -505,44 +503,43 @@ SITE_JS = r'''/* Finovo: форма заявки и копирование ад�
   function hook(lead) { if (HOOK) { try { fetch(HOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead), keepalive: true }).catch(function () {}); } catch (e) {} } }
   function netlify(fd) { return fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd).toString() }).then(function (r) { if (!r.ok) throw new Error(r.status); }); }
 
-  /* окно «Zamów pakiet»: кнопка пакета → шаг 1 (форма) → шаг 2 (спасибо) */
-  var pk = document.getElementById('pkSheet');
-  if (pk) {
-    var pf = document.getElementById('pkForm'), pOut = document.getElementById('pkOut'), pBtn = document.getElementById('pkSend');
-    var s1 = document.getElementById('pkS1'), s2 = document.getElementById('pkS2'), step = document.getElementById('pkStep'), last = null, cur = null;
-    var txt = function (el, sel) { var x = el.querySelector(sel); return x ? x.textContent.trim() : ''; };
-    var openPk = function (card, from) {
-      cur = { name: txt(card, 'h3'), price: txt(card, '.pr-price b'), from: txt(card, '.pr-from'), net: txt(card, '.pr-net') };
-      document.getElementById('pkName').textContent = cur.name; document.getElementById('pkPrice').textContent = cur.price;
-      document.getElementById('pkFrom').textContent = cur.from; document.getElementById('pkNet').textContent = cur.net;
-      document.getElementById('pkPkg').value = cur.name + ' — ' + (cur.from ? cur.from + ' ' : '') + cur.price + ' zł';
-      s1.hidden = false; s2.hidden = true; step.textContent = step.dataset.s1; pOut.textContent = ''; pOut.className = 'msg';
-      last = from; pk.hidden = false; document.documentElement.classList.add('pk-open');
-      setTimeout(function () { document.getElementById('pkImie').focus({ preventScroll: true }); }, 60);
-    };
-    var closePk = function () { pk.hidden = true; document.documentElement.classList.remove('pk-open'); if (last) last.focus({ preventScroll: true }); };
-    document.addEventListener('click', function (ev) {
-      var b = ev.target.closest('.pr-btn'); if (b && b.closest('.pr-card')) { ev.preventDefault(); openPk(b.closest('.pr-card'), b); return; }
-      if (ev.target.closest('[data-pk-close]')) closePk();
+  /* пакет: окно заказа */
+  var dlg = document.getElementById('pkDlg');
+  if (dlg) {
+    var pf = document.getElementById('pkF'), $ = function (i) { return document.getElementById(i); };
+    var live2 = /finovo|netlify\.app$/i.test(location.hostname);
+    document.querySelectorAll('[data-pkg]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = b.closest('.pr-card'), fr = c.querySelector('.pr-from');
+        $('pkName').textContent = c.querySelector('h3').textContent;
+        $('pkLim').textContent = c.querySelector('.pr-net').textContent;
+        $('pkPrice').textContent = c.querySelector('.pr-price b').textContent;
+        $('pkFrom').textContent = fr ? fr.textContent + ' ' : '';
+        $('pkPkg').value = c.querySelector('h3').textContent + ' — ' + (fr ? 'od ' : '') + c.querySelector('.pr-price b').textContent + ' zł';
+        $('pkForm').hidden = false; $('pkOk').hidden = true; $('pkErr').textContent = '';
+        if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+        setTimeout(function () { $('pkNm').focus(); }, 60);
+      });
     });
-    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !pk.hidden) closePk(); });
+    dlg.querySelectorAll('[data-pk-close]').forEach(function (x) { x.addEventListener('click', function () { dlg.close ? dlg.close() : dlg.removeAttribute('open'); }); });
+    dlg.addEventListener('click', function (ev) { if (ev.target === dlg) dlg.close(); });
     pf.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      var fd = new FormData(pf), name = (fd.get('imie') || '').trim(), tel = (fd.get('telefon') || '').trim();
-      if (!name || tel.replace(/\D/g, '').length < 7) { pOut.className = 'msg err'; pOut.textContent = pf.dataset.req; return; }
-      if (!live) { pOut.className = 'msg'; pOut.textContent = f ? f.dataset.preview : ''; return; }
-      var opt = function (id) { var s = document.getElementById(id); return s.options[s.selectedIndex].textContent.trim(); };
-      fd.set('od_kiedy', opt('pkStart')); fd.set('pracownicy', opt('pkStaff'));
-      if (!fd.get('bot-field')) hook({ name: name, contact: tel, phone: tel, email: (fd.get('email') || '').trim(), form: 'Pakiet: ' + fd.get('pakiet'),
-        message: 'Od kiedy: ' + opt('pkStart') + ' · Pracownicy: ' + opt('pkStaff'), package: fd.get('pakiet'), start: opt('pkStart'), staff: opt('pkStaff'),
-        lang: fd.get('jezyk') || '', page: location.href, referrer: document.referrer || '', utm: utmOf(), submitted_at: new Date().toISOString() });
-      pBtn.disabled = true;
-      netlify(fd).then(function () { pf.reset(); s1.hidden = true; s2.hidden = false; step.textContent = step.dataset.s2; pk.querySelector('.pk-in').scrollTop = 0; })
-        .catch(function () { pOut.className = 'msg err'; pOut.textContent = pf.dataset.err; })
-        .then(function () { pBtn.disabled = false; });
+      var nm = $('pkNm').value.trim(), tel = $('pkTel').value.replace(/[^0-9+]/g, '');
+      if (!nm || tel.length < 9) { $('pkErr').textContent = dlg.dataset.req; return; }
+      var done = function () { $('pkOkH').textContent = dlg.dataset.ok.replace('{name}', nm); $('pkForm').hidden = true; $('pkOk').hidden = false; pf.reset(); dlg.querySelector('.pk-in').scrollTop = 0; };
+      if (!live2) { done(); return; }
+      if (live2 && !pf.querySelector('[name="bot-field"]').value) { var sel = function (n) { var s = pf.querySelector('[name="' + n + '"]'); return s.options[s.selectedIndex].textContent.trim(); };
+        hook({ name: nm, contact: $('pkTel').value.trim(), phone: $('pkTel').value.trim(), email: (pf.querySelector('[name="email"]').value || '').trim(), form: 'Pakiet: ' + $('pkPkg').value,
+          message: 'Od kiedy: ' + sel('start') + ' · Pracownicy: ' + sel('pracownicy'), package: $('pkPkg').value, start: sel('start'), staff: sel('pracownicy'),
+          lang: $('pkLang').value, page: location.href, referrer: document.referrer || '', utm: utmOf(), submitted_at: new Date().toISOString() }); }
+      $('pkSend').disabled = true;
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(new FormData(pf)).toString() })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
+        .catch(function () { $('pkErr').textContent = dlg.dataset.err; })
+        .then(function () { $('pkSend').disabled = false; });
     });
   }
-
   if (!f) return;
   f.addEventListener('submit', function (ev) {
     ev.preventDefault();
