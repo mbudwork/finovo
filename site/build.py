@@ -353,6 +353,9 @@ def build_home(lang):
     main = main.replace('<input type="hidden" name="jezyk" id="fLang" value="pl">', f'<input type="hidden" name="jezyk" id="fLang" value="{lang}">')
     main = main.replace('id="leadForm"', f'id="leadForm" data-ok="{e(t["ct.ok"])}" data-err="{e(t["ct.err"])}" data-req="{e(t["ct.req"])}" data-preview="{e(t["ct.preview"])}"')
     main = main.replace('id="copyMail"', f'id="copyMail" data-copied="{e(t["ct.copied"])}"')
+    main = main.replace('data-s1="" data-s2=""', f'data-s1="{e(t["pk.step1"])}" data-s2="{e(t["pk.step2"])}"')
+    main = main.replace('id="pkForm"', f'id="pkForm" data-req="{e(t["pk.req"])}" data-err="{e(t["ct.err"])}"')
+    main = main.replace('<input type="hidden" name="jezyk" value="pl" id="pkLang">', f'<input type="hidden" name="jezyk" value="{lang}" id="pkLang">')
     art = ARTICLES[0][lang]['path']
     main = main.replace(f'<p>{t["fq4.a"]}</p>', f'<p>{t["fq4.a"]} <a href="{art}">{UI[lang]["switch"]} →</a></p>')
     main = main.replace('href="#demo" data-demo-link="jdg"', f'href="{demo_url(lang)}"')
@@ -497,22 +500,63 @@ SITE_JS = r'''/* Finovo: форма заявки и копирование ад�
     for (var d = 1; d <= days; d++) { var dow = (first + d - 1) % 7; h += '<div class="day' + (dow >= 5 ? ' we' : '') + (marks[d] ? ' k ' + marks[d] : '') + '">' + d + '</div>'; }
     g.innerHTML = h; mEl.textContent = names[m]; var yEl = document.getElementById('calYear'); if (yEl) yEl.textContent = y;
   }
-  if (!f) return;
   var live = /finovo|netlify\.app$/i.test(location.hostname), HOOK = '__LEADS_HOOK__';
+  function utmOf() { var q = new URLSearchParams(location.search), u = {}; ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'].forEach(function (k) { if (q.get(k)) u[k] = q.get(k); }); return u; }
+  function hook(lead) { if (HOOK) { try { fetch(HOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead), keepalive: true }).catch(function () {}); } catch (e) {} } }
+  function netlify(fd) { return fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd).toString() }).then(function (r) { if (!r.ok) throw new Error(r.status); }); }
+
+  /* окно «Zamów pakiet»: кнопка пакета → шаг 1 (форма) → шаг 2 (спасибо) */
+  var pk = document.getElementById('pkSheet');
+  if (pk) {
+    var pf = document.getElementById('pkForm'), pOut = document.getElementById('pkOut'), pBtn = document.getElementById('pkSend');
+    var s1 = document.getElementById('pkS1'), s2 = document.getElementById('pkS2'), step = document.getElementById('pkStep'), last = null, cur = null;
+    var txt = function (el, sel) { var x = el.querySelector(sel); return x ? x.textContent.trim() : ''; };
+    var openPk = function (card, from) {
+      cur = { name: txt(card, 'h3'), price: txt(card, '.pr-price b'), from: txt(card, '.pr-from'), net: txt(card, '.pr-net') };
+      document.getElementById('pkName').textContent = cur.name; document.getElementById('pkPrice').textContent = cur.price;
+      document.getElementById('pkFrom').textContent = cur.from; document.getElementById('pkNet').textContent = cur.net;
+      document.getElementById('pkPkg').value = cur.name + ' — ' + (cur.from ? cur.from + ' ' : '') + cur.price + ' zł';
+      s1.hidden = false; s2.hidden = true; step.textContent = step.dataset.s1; pOut.textContent = ''; pOut.className = 'msg';
+      last = from; pk.hidden = false; document.documentElement.classList.add('pk-open');
+      setTimeout(function () { document.getElementById('pkImie').focus({ preventScroll: true }); }, 60);
+    };
+    var closePk = function () { pk.hidden = true; document.documentElement.classList.remove('pk-open'); if (last) last.focus({ preventScroll: true }); };
+    document.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.pr-btn'); if (b && b.closest('.pr-card')) { ev.preventDefault(); openPk(b.closest('.pr-card'), b); return; }
+      if (ev.target.closest('[data-pk-close]')) closePk();
+    });
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !pk.hidden) closePk(); });
+    pf.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var fd = new FormData(pf), name = (fd.get('imie') || '').trim(), tel = (fd.get('telefon') || '').trim();
+      if (!name || tel.replace(/\D/g, '').length < 7) { pOut.className = 'msg err'; pOut.textContent = pf.dataset.req; return; }
+      if (!live) { pOut.className = 'msg'; pOut.textContent = f ? f.dataset.preview : ''; return; }
+      var opt = function (id) { var s = document.getElementById(id); return s.options[s.selectedIndex].textContent.trim(); };
+      fd.set('od_kiedy', opt('pkStart')); fd.set('pracownicy', opt('pkStaff'));
+      if (!fd.get('bot-field')) hook({ name: name, contact: tel, phone: tel, email: (fd.get('email') || '').trim(), form: 'Pakiet: ' + fd.get('pakiet'),
+        message: 'Od kiedy: ' + opt('pkStart') + ' · Pracownicy: ' + opt('pkStaff'), package: fd.get('pakiet'), start: opt('pkStart'), staff: opt('pkStaff'),
+        lang: fd.get('jezyk') || '', page: location.href, referrer: document.referrer || '', utm: utmOf(), submitted_at: new Date().toISOString() });
+      pBtn.disabled = true;
+      netlify(fd).then(function () { pf.reset(); s1.hidden = true; s2.hidden = false; step.textContent = step.dataset.s2; pk.querySelector('.pk-in').scrollTop = 0; })
+        .catch(function () { pOut.className = 'msg err'; pOut.textContent = pf.dataset.err; })
+        .then(function () { pBtn.disabled = false; });
+    });
+  }
+
+  if (!f) return;
   f.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var out = document.getElementById('fMsgOut'), btn = document.getElementById('fSend');
     if (!document.getElementById('fName').value.trim() || !document.getElementById('fContact').value.trim()) { out.className = 'msg err'; out.textContent = f.dataset.req; return; }
     if (!live) { out.className = 'msg'; out.textContent = f.dataset.preview; return; }
     btn.disabled = true;
-    var fd = new FormData(f), c = (fd.get('kontakt') || '').trim(), q = new URLSearchParams(location.search), utm = {};
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'].forEach(function (k) { if (q.get(k)) utm[k] = q.get(k); });
+    var fd = new FormData(f), c = (fd.get('kontakt') || '').trim(), utm = utmOf();
     var lead = { name: (fd.get('imie') || '').trim(), contact: c, phone: /@/.test(c) ? '' : c, email: /@/.test(c) ? c : '', form: fd.get('forma') || '',
       message: (fd.get('wiadomosc') || '').trim(), lang: fd.get('jezyk') || '', page: location.href, referrer: document.referrer || '', utm: utm, submitted_at: new Date().toISOString() };
     /* копия в Google-таблицу и Telegram (Apps Script); основная отправка — Netlify Forms */
-    if (HOOK && !fd.get('bot-field')) { try { fetch(HOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead), keepalive: true }).catch(function () {}); } catch (e) {} }
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd).toString() })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); out.className = 'msg ok'; out.textContent = f.dataset.ok; f.reset(); })
+    if (!fd.get('bot-field')) hook(lead);
+    netlify(fd)
+      .then(function () { out.className = 'msg ok'; out.textContent = f.dataset.ok; f.reset(); })
       .catch(function () { out.className = 'msg err'; out.textContent = f.dataset.err; })
       .then(function () { btn.disabled = false; });
   });
