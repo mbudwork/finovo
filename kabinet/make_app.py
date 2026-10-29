@@ -140,7 +140,7 @@ real = demo_only_css(with_i18n(real), False)
 
 # ── 2. демо для сайта ──────────────────────────────────────────────────────
 demo = s
-demo = rep(demo, '<title>Finovo — кабинет</title>', '<title>Finovo — демо кабинета</title>\n<meta name="robots" content="noindex">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n<meta name="theme-color" content="#15705a">')
+demo = rep(demo, '<title>Finovo — кабинет</title>', '<title>Finovo · demo</title>\n<meta name="robots" content="noindex">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n<meta name="theme-color" content="#15705a">')
 demo = rep(demo, "url: 'https://ahijrnilsjbbhonxhvtw.supabase.co',", "url: 'demo',")
 demo = rep(demo, "key: 'sb_publishable_ZipRQTQqwzC7KdPsT-mINg_Q0Akrp_E',", "key: 'demo',")
 demo = re.sub(r"  vapid: '[^']*'", "  vapid: '',\n  site: '/',\n  contact: '/#kontakt'", demo)
@@ -166,7 +166,7 @@ demo = rep(demo, """async function start() {
   if (CONFIG.demo) { await sb.auth.signInWithPassword({ email: (DEMO_FIRM === 'spolka' ? 'novabud' : 'budmax') + '@kabinet.demo', password: 'Demo-2026!' }); }
   const { data: { session } } = await sb.auth.getSession();""")
 demo = rep(demo, """    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});""", """    if (!CONFIG.demo && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});""")
-demo = rep(demo, '<div id="boot" class="loading"><div class="spin"></div>Загружаем…</div>', '<div id="boot" class="loading"><div class="spin"></div>Открываем демо…</div>')
+demo = rep(demo, '<div id="boot" class="loading"><div class="spin"></div>Загружаем…</div>', '<div id="boot" class="loading" aria-label="Finovo"><div class="spin"></div></div>')
 # прошлый месяц: прошедшие сроки — оплачены (иначе демо показывает «просрочено»)
 PAYLINE = "if (m <= CURM - 2) ['zus', 'pit4', 'it', 'vat'].forEach(k => T.payments.push({ firm_id: fid, ym: Y + '-' + pad(m), kind: k, paid_at: dayIn(m + 1, k === 'vat' ? 24 : k === 'zus' && c.type === 'sp' ? 14 : 19) }));"
 for name in ('demo', 'crawl'):

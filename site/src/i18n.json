@@ -111,7 +111,7 @@
   "c4.n": "Po polsku i po ukraińsku",
   "faq.h": "Częste pytania",
   "fq1.q": "Ile kosztuje obsługa?",
-  "fq1.a": "Cena zależy od formy firmy, liczby dokumentów i pracowników. Podajemy ją po bezpłatnej rozmowie, na piśmie. Aplikacja jest w cenie obsługi.",
+  "fq1.a": "JDG od 249 zł netto miesięcznie, spółka z o.o. od 999 zł netto — pakiety i pełny cennik są w sekcji „Ceny”. Ostateczną cenę potwierdzamy na piśmie po bezpłatnej rozmowie. Aplikacja jest w cenie obsługi.",
   "fq2.q": "Czy muszę coś wpisywać do aplikacji?",
   "fq2.a": "Nie. Faktury pobieramy z KSeF, wyciągi wgrywa biuro. Ty tylko fotografujesz dokumenty, których nie ma w KSeF.",
   "fq3.q": "Czy aplikacja zastępuje księgową?",
@@ -159,7 +159,7 @@
   "w2.n": "W cenie obsługi",
   "w3.k": "Zamknięcie roku",
   "w3.o": "Osobna opłata, często ok. 1 500 zł",
-  "w3.n": "Tyle, co jedna opłata miesięczna",
+  "w3.n": "JDG: w cenie. Spółka: jedna opłata miesięczna",
   "w4.k": "Spóźnione dokumenty",
   "w4.o": "Dopłata 50–100% do ceny",
   "w4.n": "Bez dopłat karnych",
@@ -172,9 +172,10 @@
   "fq7.q": "Czy mogę zobaczyć aplikację przed podpisaniem umowy?",
   "fq7.a": "Tak. Demo na przykładowej firmie działa bez logowania, w wersji dla JDG i dla spółki.",
   "fq8.q": "Kiedy złożyć wypowiedzenie w obecnym biurze?",
-  "fq8.a": "Sprawdź okres wypowiedzenia w swojej umowie. Żeby zacząć z nami od 1 stycznia, przy miesięcznym okresie wypowiedzenie trzeba złożyć do końca listopada, a przy dwumiesięcznym — do końca października. Pomożemy przygotować pismo.",
+  "fq8.a": "Sprawdź w umowie okres wypowiedzenia i od kiedy się go liczy. Najczęściej kończy się on z końcem miesiąca. Przykład: żeby zacząć z nami od 1 stycznia, przy miesięcznym okresie wypowiedzenie trzeba złożyć do 30 listopada, a przy dwumiesięcznym — do 31 października. Pomożemy przygotować pismo.",
   "ct.call": "Zadzwoń",
-  "ct.wa": "WhatsApp"
+  "ct.wa": "WhatsApp",
+  "nav.prices": "Ceny"
  },
  "uk": {
   "nav.services": "Послуги",
@@ -288,7 +289,7 @@
   "c4.n": "Польською та українською",
   "faq.h": "Часті питання",
   "fq1.q": "Скільки коштує обслуговування?",
-  "fq1.a": "Ціна залежить від форми фірми, кількості документів і працівників. Називаємо її після безкоштовної розмови, письмово. Застосунок входить у вартість.",
+  "fq1.a": "JDG від 249 zł нетто на місяць, спілка — від 999 zł нетто: пакети й повний прайс — у розділі «Ціни». Остаточну ціну підтверджуємо письмово після безкоштовної розмови. Застосунок входить у вартість.",
   "fq2.q": "Чи треба щось вводити в застосунок?",
   "fq2.a": "Ні. Фактури забираємо з KSeF, виписки завантажує бюро. Ви лише фотографуєте документи, яких немає в KSeF.",
   "fq3.q": "Чи замінює застосунок бухгалтера?",
@@ -336,7 +337,7 @@
   "w2.n": "У вартості обслуговування",
   "w3.k": "Закриття року",
   "w3.o": "Окрема оплата, часто близько 1 500 zł",
-  "w3.n": "Як одна місячна оплата",
+  "w3.n": "JDG: у ціні. Спілка: одна місячна оплата",
   "w4.k": "Запізнення з документами",
   "w4.o": "Доплата 50–100% до ціни",
   "w4.n": "Без штрафних доплат",
@@ -348,9 +349,10 @@
   "w6.n": "1 місяць",
   "fq7.q": "Чи можна подивитися застосунок до підписання договору?",
   "fq7.a": "Так. Демо на прикладовій фірмі працює без входу, у версії для JDG і для spółki.",
-  "fq8.q": "Коли подавати розірвання договору в теперішньому бюро?",
-  "fq8.a": "Перевірте термін розірвання у своєму договорі. Щоб почати з нами з 1 січня, при місячному терміні розірвання треба подати до кінця листопада, а при двомісячному — до кінця жовтня. Допоможемо підготувати лист.",
+  "fq8.q": "Коли повідомити теперішнє бюро про розірвання договору?",
+  "fq8.a": "Перевірте в договорі строк розірвання і з якого дня він рахується. Найчастіше він закінчується в останній день місяця. Приклад: щоб почати з нами з 1 січня, при строку в 1 місяць заяву про розірвання треба подати до 30 листопада, а при строку у 2 місяці — до 31 жовтня. Допоможемо підготувати лист.",
   "ct.call": "Подзвонити",
-  "ct.wa": "WhatsApp"
+  "ct.wa": "WhatsApp",
+  "nav.prices": "Ціни"
  }
 }

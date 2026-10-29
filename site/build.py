@@ -29,7 +29,7 @@ WHATSAPP = True                          # кнопка WhatsApp на тот ж�
 # Вставьте сюда адрес веб-приложения Apps Script (https://script.google.com/macros/s/…/exec). Пусто — только Netlify Forms.
 LEADS_HOOK = 'https://script.google.com/macros/s/AKfycbxT_Q_WaNTh68FXAilcbKKnjtW_ZG9zqFr9Qklhm1Y-9eRudVB09a-vwtgdI5TzEoU02w/exec'
 DEMO_PATH = '/demo/'                     # демо кабинета (src/demo/index.html), не индексируется
-SEASON_UNTIL = '2026-12-31'              # до этой даты на первом экране плашка «смена бюро с 1 января»
+SEASON_UNTIL = '2026-10-27'              # до этой даты на первом экране плашка «смена бюро с 1 января» (сейчас выключена; включить — поставить 2026-12-31)
 # Данные spółki для политики конфиденциальности — заполнить после регистрации.
 COMPANY = dict(name='[nazwa spółki]', address='[adres siedziby]', nip='[NIP]', krs='[KRS]')
 PRIVACY_UPDATED = '2026-10-21'
@@ -261,7 +261,7 @@ def header(lang, alt_paths, home_path):
       <a href="{h}#uslugi">{t['nav.services']}</a>
       <a href="{h}#aplikacja">{t['nav.app']}</a>
       <a href="{h}#jak">{t['nav.how']}</a>
-      <a href="{h}#warunki">{t['nav.terms']}</a>
+      <a href="{h}#ceny">{t['nav.prices']}</a>
       <a href="{h}#faq">{t['nav.faq']}</a>
     </nav>
     <div class="lang" role="group" aria-label="Język / Мова">{sw}</div>
@@ -342,6 +342,7 @@ def build_home(lang):
     t, H = T[lang], HOME[lang]
     src = (SRC / 'home.html').read_text('utf-8')
     main = src[src.index('<main'):src.index('</main>') + 7]
+    main = main.replace('<!--PRICING-->', (SRC / f'pricing.{lang}.html').read_text('utf-8').rstrip('\n').replace('\n', '\n'))   # пакеты и цены (src/pricing.pl.html, pricing.uk.html)
     def fill(m):
         key = m.group(4); v = t.get(key)
         if not isinstance(v, str): raise KeyError(key)
